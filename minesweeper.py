@@ -19,16 +19,22 @@ class main_window(QMainWindow):
         horizon_layout = QHBoxLayout()
 
         self.mines = QLabel()
-        self.mines.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.mines_text = QLabel("Mines: ")
+        self.mines.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.mines_text.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
 
         self.clock = QLabel()
-        self.clock.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.clock_text = QLabel("Time: ")
+        self.clock.setAlignment(Qt.AlignLeft| Qt.AlignVCenter)
+        self.clock_text.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
 
         font = self.mines.font()
-        font.setPointSize(24)
-        font.setWeight(75)
+        font.setPointSize(20)
+        font.setWeight(50)
         self.mines.setFont(font)
+        self.mines_text.setFont(font)
         self.clock.setFont(font)
+        self.clock_text.setFont(font)
 
         self._timer = QTimer()
         self._timer.timeout.connect(self.update_timer)
@@ -42,9 +48,11 @@ class main_window(QMainWindow):
 
         self.button.pressed.connect(self.button_reset)
 
+        horizon_layout.addWidget(self.mines_text)
         horizon_layout.addWidget(self.mines)
-        horizon_layout.addWidget(self.button)
+        horizon_layout.addWidget(self.clock_text)
         horizon_layout.addWidget(self.clock)
+        horizon_layout.addWidget(self.button)
 
         vert_layout = QVBoxLayout()
         vert_layout.addLayout(horizon_layout)
