@@ -1,12 +1,13 @@
 import sys
 import random
+import time
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
 from tile import Tile as Tile
 
-class main_window(QWidget):
+class main_window(QMainWindow):
     def __init__(self):
         super(main_window, self).__init__()
 
@@ -53,6 +54,7 @@ class main_window(QWidget):
 
         vert_layout.addLayout(self.grid)
         window.setLayout(vert_layout)
+        self.setCentralWidget(window)
       
 
         self.create_board()
@@ -71,6 +73,59 @@ class main_window(QWidget):
                 tile.expand.connect(self.expand_reveal_area)
                 tile.clicked_mine.connect(self.game_over)
 
+    def reset_map(self):
+        # Clear all mine positions
+        for x in range(0, self.board_size):
+            for y in range(0, self.board_size):
+                tile = self.grid.itemAtPosition(y, x).widget()
+                tile.reset()
+        # Add mines to the positions
+        positions = []
+        while len(positions) < self.num_mines:
+            x, y = random.randint(0, self.board_size - 1), random.randint(0, self.board_size - 1)
+            if (x, y) not in positions:
+                w = self.grid.itemAtPosition(y, x).widget()
+                w.mine = True
+                positions.append((x, y))
+        self.status = "playing"
+
+        def get_adjacency_n(x, y):
+            positions = self.get_surrounding(x, y)
+            num_mines = sum(1 if w.mine else 0 for w in positions)
+            return num_mines
+        # Add adjacencies to the positions
+        for x in range(0, self.board_size):
+            for y in range(0, self.board_size):
+                w = self.grid.itemAtPosition(y, x).widget()
+                w.adjacent_n = get_adjacency_n(x, y)
+
+
+    def get_surrounding(self, x, y):
+        positions = []
+        for xi in range(max(0, x - 1), min(x + 2, self.board_size)):
+            for yi in range(max(0, y - 1), min(y + 2, self.board_size)):
+                positions.append(self.grid.itemAtPosition(yi, xi).widget())
+        return positions
+
+    def show_mines(self):
+        for x in range(0, self.board_size):
+            for y in range(0, self.board_size):
+                w = self.grid.itemAtPosition(y, x).widget()
+                w.reveal()
+
+    def expand_reveal_area(self, x, y):
+        for xi in range(max(0, x - 1), min(x + 2, self.board_size)):
+            for yi in range(max(0, y - 1), min(y + 2, self.board_size)):
+                w = self.grid.itemAtPosition(yi, xi).widget()
+                if not w.mine:
+                    w.click()
+
+    def start_game(self, *args):
+        if self.status != "playing":
+            self.status = "playing"
+            # Start the timer
+            self._timer_start_nsecs = int(time.time())
+    
     def update_timer(self):
         if self.status == "playing":
             secs = int(time.time()) - self._timer_start_nsecs
@@ -85,8 +140,9 @@ class main_window(QWidget):
             self.status = "playing"
             self.reset_map()
 
-
-
+    def game_over(self):
+        self.show_mines()
+        self.status = "failed"
 
 
 if __name__ == '__main__':

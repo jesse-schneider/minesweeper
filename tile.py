@@ -1,7 +1,9 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-from tile import Tile as Tile
+
+FLAG_IMAGE = QImage("./image/flag-cross.png")
+MINE_IMAGE = QImage("./image/mine.png")
 
 class Tile(QWidget):
     expand = pyqtSignal(int, int)
