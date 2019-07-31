@@ -38,7 +38,7 @@ class main_window(QMainWindow):
 
         self._timer = QTimer()
         self._timer.timeout.connect(self.update_timer)
-        self._timer.start(1000)  # 1 second timer
+        self._timer.start(1000)
 
         self.mines.setText("%02d" % self.num_mines)
         self.clock.setText("000")
@@ -92,43 +92,43 @@ class main_window(QMainWindow):
         while len(positions) < self.num_mines:
             x, y = random.randint(0, self.board_size - 1), random.randint(0, self.board_size - 1)
             if (x, y) not in positions:
-                w = self.grid.itemAtPosition(y, x).widget()
-                w.mine = True
+                element = self.grid.itemAtPosition(y, x).widget()
+                element.mine = True
                 positions.append((x, y))
         self.status = "playing"
 
         def get_adjacency_n(x, y):
             positions = self.get_surrounding(x, y)
-            num_mines = sum(1 if w.mine else 0 for w in positions)
+            num_mines = sum(1 if element.mine else 0 for element in positions)
             return num_mines
         # Add adjacencies to the positions
         for x in range(0, self.board_size):
             for y in range(0, self.board_size):
-                w = self.grid.itemAtPosition(y, x).widget()
-                w.adjacent_n = get_adjacency_n(x, y)
+                element = self.grid.itemAtPosition(y, x).widget()
+                element.adjacent_n = get_adjacency_n(x, y)
 
 
     def get_surrounding(self, x, y):
         positions = []
-        for xi in range(max(0, x - 1), min(x + 2, self.board_size)):
-            for yi in range(max(0, y - 1), min(y + 2, self.board_size)):
-                positions.append(self.grid.itemAtPosition(yi, xi).widget())
+        for i in range(max(0, x - 1), min(x + 2, self.board_size)):
+            for j in range(max(0, y - 1), min(y + 2, self.board_size)):
+                positions.append(self.grid.itemAtPosition(j, i).widget())
         return positions
 
     def show_mines(self):
         for x in range(0, self.board_size):
             for y in range(0, self.board_size):
-                w = self.grid.itemAtPosition(y, x).widget()
-                w.reveal()
+                element = self.grid.itemAtPosition(y, x).widget()
+                element.reveal()
 
     def expand_reveal_area(self, x, y):
         for xi in range(max(0, x - 1), min(x + 2, self.board_size)):
             for yi in range(max(0, y - 1), min(y + 2, self.board_size)):
-                w = self.grid.itemAtPosition(yi, xi).widget()
-                if not w.mine:
-                    w.click()
+                element = self.grid.itemAtPosition(yi, xi).widget()
+                if not element.mine:
+                    element.click()
 
-    def start_game(self, *args):
+    def start_game(self):
         if self.status != "playing":
             self.status = "playing"
             # Start the timer
