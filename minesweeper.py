@@ -39,6 +39,7 @@ class main_window(QMainWindow):
         self._timer = QTimer()
         self._timer.timeout.connect(self.update_timer)
         self._timer.start(1000)
+        self.timer_start_secs = int(time.time())
 
         self.mines.setText("%02d" % self.num_mines)
         self.clock.setText("000")
@@ -64,9 +65,8 @@ class main_window(QMainWindow):
         window.setLayout(vert_layout)
         self.setCentralWidget(window)
       
-
+        #setup game board, display window
         self.create_board()
-
         self.reset_map()
         self.show()
 
@@ -96,12 +96,13 @@ class main_window(QMainWindow):
                 element.mine = True
                 positions.append((x, y))
         self.status = "playing"
+        self.timer_start_secs = int(time.time())
 
         def get_adjacency_n(x, y):
             positions = self.get_surrounding(x, y)
             num_mines = sum(1 if element.mine else 0 for element in positions)
             return num_mines
-        # Add adjacencies to the positions
+        # Add adjacencies to the positions;
         for x in range(0, self.board_size):
             for y in range(0, self.board_size):
                 element = self.grid.itemAtPosition(y, x).widget()
@@ -132,11 +133,11 @@ class main_window(QMainWindow):
         if self.status != "playing":
             self.status = "playing"
             # Start the timer
-            self._timer_start_nsecs = int(time.time())
+            self.timer_start_secs = int(time.time())
     
     def update_timer(self):
         if self.status == "playing":
-            secs = int(time.time()) - self._timer_start_nsecs
+            secs = int(time.time()) - self.timer_start_secs
             self.clock.setText("%03d" % secs)
     
     def button_reset(self):
