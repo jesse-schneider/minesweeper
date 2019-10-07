@@ -9,23 +9,6 @@ class Tile(QWidget):
     expand = pyqtSignal(int, int)
     clicked = pyqtSignal()
     clicked_mine = pyqtSignal()
-    size = 300
-    xAx = (3**0.5 / 2)
-    hexaPoints = [QPoint(size/4,0),
-                    QPoint(size/4 + size/2,0),
-                    QPoint(size,size*0.5*xAx),
-                    QPoint(size/4 + size/2,size*xAx),
-                    QPoint(size/4,size*xAx),
-                    QPoint(0,size*0.5*xAx)]
-
-    hexaPointsF = [QPointF(size/4,0),
-                    QPointF(size/4 + size/2,0),
-                    QPointF(size,size*0.5*xAx),
-                    QPointF(size/4 + size/2,size*xAx),
-                    QPointF(size/4,size*xAx),
-                    QPointF(0,size*0.5*xAx)]
-    hexa = QPolygon(hexaPoints)
-    hexaF = QPolygonF(hexaPoints)
 
     def __init__(self, x, y):
         super(Tile, self).__init__()
@@ -56,7 +39,6 @@ class Tile(QWidget):
         pen = QPen(outer)
         pen.setWidth(1)
         p.setPen(pen)
-        p.drawPolygon(*Tile.hexaF)
 
         if self.revealed:
             if self.mine:

@@ -14,6 +14,7 @@ class main_window(QMainWindow):
         self.board_size = 10
         self.num_mines = 10
         self.status = "Playing"
+        self.traditional = True
 
         window = QWidget()
         horizon_layout = QHBoxLayout()
@@ -107,7 +108,6 @@ class main_window(QMainWindow):
             for y in range(0, self.board_size):
                 element = self.grid.itemAtPosition(y, x).widget()
                 element.adjacent_n = get_adjacency_n(x, y)
-
 
     def get_surrounding(self, x, y):
         positions = []
