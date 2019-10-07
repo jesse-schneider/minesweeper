@@ -7,9 +7,9 @@ from PyQt5.QtCore import *
 
 from tile import Tile as Tile
 
-class main_window(QMainWindow):
+class minesweeper(QMainWindow):
     def __init__(self):
-        super(main_window, self).__init__()
+        super(minesweeper, self).__init__()
 
         self.board_size = 10
         self.num_mines = 10
@@ -156,5 +156,5 @@ class main_window(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication([])
-    window = main_window()
+    window = minesweeper()
     sys.exit(app.exec_())
